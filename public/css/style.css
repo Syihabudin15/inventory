@@ -1,8 +1,35 @@
-
+.search-brg-wrap{
+    display: flex;
+}
+.search-brg{
+    border-color: rgb(200, 200, 200);
+    border-width: .1cap;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+.exmp-btn{
+    border: 1px solid blue;
+    padding: 0 5px;
+}
+#date-picker-exampl{
+    display: flex;
+    justify-content: space-evenly;
+}
+.search-date{
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+.crsr{
+    cursor: pointer;
+}
 
 
 @media only screen and (max-width: 600px){
     .on-mbl{
+        display: none;
+    }
+    .search-date label{
         display: none;
     }
 }

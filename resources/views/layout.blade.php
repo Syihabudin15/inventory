@@ -40,43 +40,49 @@
             <hr class="sidebar-divider d-none d-md-block">
 
             <li class="nav-item">
-                <a class="nav-link" href="/supplier">
+                <a class="nav-link" href="/">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="/supplier">
+                    <i class="bi bi-buildings"></i>
                     <span>Supplier</span></a>
             </li>
 
             <li class="nav-item">
                 <a class="nav-link" href="/barang">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="bi bi-box"></i>
                     <span>Barang</span></a>
             </li>
             
             <li class="nav-item">
                 <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true"
                     aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="bi bi-cart"></i>
                     <span>Transaksi Barang</span>
                 </a>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Menu Transaksi Barang:</h6>
-                        <a class="collapse-item" href="/barang-masuk">Barang Masuk</a>
-                        <a class="collapse-item" href="/barang-keluar">Barang Keluar</a>
-                        <a class="collapse-item" href="/barang-rusak">Barang Rusak</a>
+                        <a class="collapse-item" href="/barang-masuk"><i class="bi bi-cart-check"></i> Barang Masuk</a>
+                        <a class="collapse-item" href="/barang-keluar"><i class="bi bi-cart-dash"></i> Barang Keluar</a>
+                        <a class="collapse-item" href="/barang-rusak"><i class="bi bi-cart-x"></i> Barang Rusak</a>
                     </div>
                 </div>
             </li>
 
             <li class="nav-item">
                 <a class="nav-link" href="/laporan">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="bi bi-book"></i>
                     <span>Laporan Bulanan</span></a>
             </li>
 
             <li class="nav-item">
                 <a class="nav-link" href="/pengguna">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="bi bi-person"></i>
                     <span>Pengguna</span></a>
             </li>
 
@@ -188,7 +194,6 @@
 
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.js"></script>
 

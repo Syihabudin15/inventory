@@ -9,7 +9,7 @@ class LaporanController extends Controller
     //
     public function index() {
         return view('LaporanView', [
-            "heading" => "Laporan"
+            "heading" => "Laporan Bulanan"
         ]);
     }
 }
