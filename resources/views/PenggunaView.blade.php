@@ -27,6 +27,38 @@
                                     <button class="btn btn-sm btn-outline-primary">Cari</button>
                                 </div>
                             </div>
+
+                            @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
+                        @if ($message = Session::get('success'))
+                            <div class="alert alert-success alert-block">
+                                <button type="button" class="close" data-dismiss="alert">×</button>	
+                                <strong>{{ $message }}</strong>
+                            </div>
+                        @endif
+
+                        @if ($message = Session::get('info'))
+                            <div class="alert alert-success alert-block">
+                                <button type="button" class="close" data-dismiss="alert">×</button>	
+                                <strong>{{ $message }}</strong>
+                            </div>
+                        @endif
+
+                        @if ($message = Session::get('error'))
+                            <div class="alert alert-danger alert-block">
+                                <button type="button" class="close" data-dismiss="alert">×</button>	
+                                <strong>{{ $message }}</strong>
+                            </div>
+                        @endif
+
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
@@ -48,45 +80,37 @@
                                         </tr>
                                     </tfoot>
                                     <tbody>
+                                        @foreach ($data as $user)
                                         <tr>
-                                            <td>Muhammad</td>
-                                            <td>Taufiqurrahman</td>
-                                            <td>muhtaufiqurrahman21</td>
-                                            <td>MANAJER</td>
+                                            <td>{{$user->first_name}}</td>
+                                            <td>{{$user->last_name}}</td>
+                                            <td>{{$user->username}}</td>
+                                            <td>{{$user->role}}</td>
                                             <td>
-                                                <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#hapusModal">
+                                                <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#hapusModal" onclick="onHapus('{{$user->id}}')">
                                                     <i class="bi bi-trash btn-outline-danger crsr"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#editModal">
+                                                <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#editModal" onclick="onEdit('{{$user->first_name}}','{{$user->last_name}}','{{$user->username}}','{{$user->password}}'), '{{$user->role}}'">
                                                     <i class="bi bi-pencil-square btn-outline-success crsr"></i>
                                                 </button>
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <td>Tafiq</td>
-                                            <td>Rahman</td>
-                                            <td>taufiq23</td>
-                                            <td>ADMIN</td>
-                                            <td>
-                                                <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#hapusModal">
-                                                    <i class="bi bi-trash btn-outline-danger crsr"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#editModal">
-                                                    <i class="bi bi-pencil-square btn-outline-success crsr"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                                 <div class="d-flex flex-row-reverse">
                                     <nav aria-label="Page navigation example">
                                         <ul class="pagination">
-                                            <li class="page-item">
-                                                <a class="page-link" href="#" aria-label="Previous">
-                                                    <span aria-hidden="true">Prev &laquo;</span>
+                                            @php
+                                                $page = 1;
+                                            @endphp
+                                            <li class="page-item btn btn-sm {{$page === 1 ? "disabled" : ""}}">
+                                                <a class="page-link" href="/supplier?page={{$page === 1 ? 1 : $page-1}}" aria-label="Previous">
+                                                    <span aria-hidden="true">&laquo; Prev</span>
                                                 </a>
-                                                </li>
-                                                <a class="page-link" href="#" aria-label="Next">
+                                            </li>
+                                            <li class="page-item btn btn-sm {{($page == ceil($total / 5)) || (ceil($total / 5) == 0) ? "disabled" : ""}}">
+                                                <a class="page-link" href="/supplier?page={{$page < ceil($total/5) ? $page+1 : ceil($total/5)}}" aria-label="Next">
                                                     <span aria-hidden="true">Next &raquo;</span>
                                                 </a>
                                             </li>
@@ -113,7 +137,9 @@
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form>
+                <form action="/pengguna" method="post">
+                    @csrf
+                    @method('post')
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Tambah {{$heading}}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
@@ -121,28 +147,32 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="first_name">Nama Depan</label>
-                            <input type="text" class="form-control" id="first_name" placeholder="John">
+                            <input type="text" class="form-control" id="first_name" placeholder="John" name="first_name" value="{{old('first_name')}}">
                         </div>
                         <div class="form-group">
                             <label for="last_name">Nama Belakang</label>
-                            <input type="text" class="form-control" id="last_name" placeholder="Doe">
+                            <input type="text" class="form-control" id="last_name" placeholder="Doe" name="last_name" value="{{old('last_name')}}">
                         </div>
                         <div class="form-group">
                             <label for="username">Username</label>
-                            <input type="text" class="form-control" id="username">
+                            <input type="text" class="form-control" id="username" name="username" value="{{old('username')}}">
                         </div>
                         <div class="form-group">
                             <label for="password">Password</label>
-                            <input type="text" class="form-control" id="password">
+                            <input type="text" class="form-control" id="password" name="password" value="{{old('password')}}">
                         </div>
                         <div class="form-group">
                             <label for="role">Role</label>
-                            <input type="text" class="form-control" id="role">
+                            <select class="custom-select" id="role" name="role">
+                                <option selected>Choose...</option>
+                                <option value="MANAJER">MANAJER</option>
+                                <option value="ADMIN">ADMIN</option>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary">Save</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
                     </div>
                 </form>
             </div>
@@ -153,36 +183,19 @@
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form>
+                <form action="/pengguna" method="post">
+                    @csrf
+                    @method('put')
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Edit {{$heading}}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
                     </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="first_name">Nama Depan</label>
-                            <input type="text" class="form-control" id="first_name" placeholder="John">
-                        </div>
-                        <div class="form-group">
-                            <label for="last_name">Nama Belakang</label>
-                            <input type="text" class="form-control" id="last_name" placeholder="Doe">
-                        </div>
-                        <div class="form-group">
-                            <label for="username">Username</label>
-                            <input type="text" class="form-control" id="username">
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input type="text" class="form-control" id="password">
-                        </div>
-                        <div class="form-group">
-                            <label for="role">Role</label>
-                            <input type="text" class="form-control" id="role">
-                        </div>
+                    <div class="modal-body" id="edit">
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary">Save</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
                     </div>
                 </form>
             </div>
@@ -193,6 +206,9 @@
     <div class="modal fade" id="hapusModal" tabindex="-1" aria-labelledby="hapusModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
+                <form action="/pengguna/delete" method="post">
+                    @csrf
+                    @method('post')
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Konfirmasi Hapus</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
@@ -200,15 +216,57 @@
                     <div class="modal-body">
                         <p>Yakin ingin menghapus pilihan?</p>
                     </div>
+                    <div id="hapus"></div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary">
                             <a>YA</a>
                         </button>
                     </div>
+                </form>
             </div>
         </div>
     </div>
     {{-- End Hapus Modal --}}
+
+    <script>
+        var edit = document.getElementById("edit");
+        var hapus = document.getElementById("hapus");
+
+        function onEdit(fName, lName, username, password, role){
+            edit.innerHTML = `
+                <div class="form-group">
+                    <label for="first_name">Nama Depan</label>
+                    <input type="text" class="form-control" id="first_name" placeholder="John" name="first_name" value="${fName}">
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Nama Belakang</label>
+                    <input type="text" class="form-control" id="last_name" placeholder="Doe" name="last_name" value="${lName}">
+                </div>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" value="${username}">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="text" class="form-control" id="password" name="password" value="${password}">
+                </div>
+                <div class="form-group">
+                    <label for="role">Role</label>
+                    <select class="custom-select" id="role" name="role">
+                        <option selected>Choose...</option>
+                        <option value="MANAJER">MANAJER</option>
+                        <option value="ADMIN">ADMIN</option>
+                    </select>
+                </div>
+            `;
+        }
+        function onHapus(id){
+            hapus.innerHTML = `
+                <label for="id">ID</label>
+                <input type="text" class="form-control" id="id" name="id" value="${id}">
+            `;
+        }
+    </script>
 
 @endsection()

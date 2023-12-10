@@ -32,6 +32,9 @@ Route::post('/supplier/delete', [SupplierController::class, 'delete']);
 
 // Barang Routes
 Route::get('/barang', [BarangController::class, 'index']);
+Route::post('/barang', [BarangController::class, 'create']);
+Route::put('/barang', [BarangController::class, 'update']);
+Route::post('/barang/delete', [BarangController::class, 'delete']);
 
 // Barang Masuk Routes
 Route::get('/barang-masuk', [BarangMasukController::class, 'index']);
@@ -47,3 +50,6 @@ Route::get('/laporan', [LaporanController::class, 'index']);
 
 // Pengguna Routes
 Route::get('/pengguna', [PenggunaController::class, 'index']);
+Route::post('/pengguna', [PenggunaController::class, 'create']);
+Route::put('/pengguna', [PenggunaController::class, 'update']);
+Route::post('/pengguna/delete', [PenggunaController::class, 'delete']);

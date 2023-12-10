@@ -59,7 +59,7 @@ class SupplierController extends Controller
                 return redirect('/supplier')->with(['success' => "Pembuatan supplier berhasil"]);
             }
         }catch(Exception $exception){
-            return redirect('/supplier')->with(['error' => "Server Error"]);
+            return redirect('/supplier')->with(['error' => "Server Error!"]);
         }
     }
 
@@ -77,7 +77,7 @@ class SupplierController extends Controller
             $find->save();
             return redirect("/supplier")->with(['info' => "Update supplier berhasil"]);
         }catch(Exception $exception){
-            dd($exception);
+            return redirect("/supplier")->with(['error' => "Server Error!"]);
         }
     }
 
