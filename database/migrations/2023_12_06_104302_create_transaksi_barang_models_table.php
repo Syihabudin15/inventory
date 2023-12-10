@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('pengguna_id')->constrained("pengguna_models");
             $table->foreignId('barang_id')->constrained("barang_models");
-            $table->foreignId('supplier_id')->constrained("supplier_models");
+            $table->foreignId('supplier_id')->constrained("supplier_models")->nullable(true);
             $table->integer('quantity', false)->length(100);
             $table->enum('status', ["MASUK", "KELUAR", "RUSAK"]);
             $table->timestamps();

@@ -10856,15 +10856,23 @@ a:focus {
   height: 15rem;
   width: 100%;
 }
+.logo-img{
+  background-size: cover;
+  width: 100px;
+}
 
 @media (min-width: 768px) {
   .chart-pie {
     height: calc(20rem - 43px) !important;
   }
+  .logo-img{
+    background-size: cover;
+    width: 200px;
+  }
 }
 
 .bg-login-image {
-  background: url("https://source.unsplash.com/K4mSJ7kc0As/600x800");
+  background: url("../img/tunas_group.jpg");
   background-position: center;
   background-size: cover;
 }

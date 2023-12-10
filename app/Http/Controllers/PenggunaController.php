@@ -66,7 +66,7 @@ class PenggunaController extends Controller
             $find->first_name = $request->first_name ? $request->first_name : $find->first_name;
             $find->last_name = $request->last_name ? $request->last_name : $find->last_name;
             $find->username = $request->username ? $request->username : $find->username;
-            $find->password = $request->password ? $request->password : $find->password;
+            $find->password = $request->password ? Hash::make($request->password) : $find->password;
             $find->role = $request->role ? $request->role : $find->role;
 
             $find->save();

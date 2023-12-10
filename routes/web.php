@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\BarangKeluarController;
 use App\Http\Controllers\BarangMasukController;
@@ -20,9 +21,11 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+// Auth Routes
+Route::get('/', [AuthController::class, 'login']);
 
 // Dashboard Routes
-Route::get('/', [DashboardController::class, 'index']);
+Route::get('/dashboard', [DashboardController::class, 'index']);
 
 // Supplier Routes
 Route::get('/supplier', [SupplierController::class, 'index']);
@@ -38,6 +41,7 @@ Route::post('/barang/delete', [BarangController::class, 'delete']);
 
 // Barang Masuk Routes
 Route::get('/barang-masuk', [BarangMasukController::class, 'index']);
+Route::post('/barang-masuk', [BarangMasukController::class, 'create']);
 
 // Barang Keluar Routes
 Route::get('/barang-keluar', [BarangKeluarController::class, 'index']);

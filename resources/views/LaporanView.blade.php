@@ -17,15 +17,44 @@
                             <h6 class="m-0 font-weight-bold text-primary">Data {{$heading}}</h6>
                         </div>
                         <div class="card-body">
-                            <div id="date-picker-example" class="d-flex justify-content-around py-3">
-                                <form class="search-date">
-                                    <label for="date">Bulan:</label>
-                                    <input type="month" id="date" class="date-inp" name="date" min="2023-12" />
-                                    <button class="btn btn-outline-primary btn-sm">Cari</button>
+                            <div class="d-flex justify-content-around flex-wrap">
+                                <form action="/laporan" method="GET">
+                                    <div class="d-flex align-items-center">
+                                        <div class="d-flex justify-content-center">
+                                            <div class="form-group mx-2">
+                                                <label for="from">From:</label>
+                                                <input type="date" id="from" class="form-control date-inp" name="from" value="{{request("from")}}" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="to">To:</label>
+                                                <input type="date" id="to" class="form-control date-inp" name="to" value="{{request("to")}}" />
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn m-1 h-45 mt-3 btn-outline-primary btn-sm">
+                                            <i class="bi bi-search"></i>
+                                        </button>
+                                    </div>
                                 </form>
-                                <button class="btn btn-outline-primary btn-sm" type="submit">
-                                    <i class="bi bi-printer-fill"></i> Cetak
-                                </button>
+                                <div class="d-flex align-items-center p-3">
+                                    <form action="/laporan/cetak" method="post">
+                                        @csrf
+                                        @method('post')
+                                        <div class="d-none">
+                                            <div class="form-group mx-2">
+                                                <label for="from">From:</label>
+                                                <input type="date" id="from" class="form-control date-inp" name="from" value="{{request("from")}}" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="to">To:</label>
+                                                <input type="date" id="to" class="form-control date-inp" name="to" value="{{request("to")}}" />
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal">
+                                            <i class="bi bi-plus"></i>
+                                            Cetak
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">

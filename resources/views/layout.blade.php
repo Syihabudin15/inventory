@@ -40,7 +40,7 @@
             <hr class="sidebar-divider d-none d-md-block">
 
             <li class="nav-item">
-                <a class="nav-link" href="/">
+                <a class="nav-link" href="/dashboard">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
@@ -102,16 +102,16 @@
 
             <!-- Main Content -->
             <div id="content">
-
                 <!-- Topbar -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-
                     <!-- Sidebar Toggle (Topbar) -->
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
 
-
+                    <div class="logo-img">
+                        <img src="img/tunas_daihatsu.png" alt="logo" width="100%">
+                    </div>
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
 

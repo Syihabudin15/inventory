@@ -36,28 +36,28 @@
                                     @endforeach
                                 </ul>
                             </div>
-                        @endif
+                            @endif
 
-                        @if ($message = Session::get('success'))
-                            <div class="alert alert-success alert-block">
-                                <button type="button" class="close" data-dismiss="alert">×</button>	
-                                <strong>{{ $message }}</strong>
-                            </div>
-                        @endif
+                            @if ($message = Session::get('success'))
+                                <div class="alert alert-success alert-block">
+                                    <button type="button" class="close" data-dismiss="alert">×</button>	
+                                    <strong>{{ $message }}</strong>
+                                </div>
+                            @endif
 
-                        @if ($message = Session::get('info'))
-                            <div class="alert alert-success alert-block">
-                                <button type="button" class="close" data-dismiss="alert">×</button>	
-                                <strong>{{ $message }}</strong>
-                            </div>
-                        @endif
+                            @if ($message = Session::get('info'))
+                                <div class="alert alert-success alert-block">
+                                    <button type="button" class="close" data-dismiss="alert">×</button>	
+                                    <strong>{{ $message }}</strong>
+                                </div>
+                            @endif
 
-                        @if ($message = Session::get('error'))
-                            <div class="alert alert-danger alert-block">
-                                <button type="button" class="close" data-dismiss="alert">×</button>	
-                                <strong>{{ $message }}</strong>
-                            </div>
-                        @endif
+                            @if ($message = Session::get('error'))
+                                <div class="alert alert-danger alert-block">
+                                    <button type="button" class="close" data-dismiss="alert">×</button>	
+                                    <strong>{{ $message }}</strong>
+                                </div>
+                            @endif
 
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -90,7 +90,7 @@
                                                 <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#hapusModal" onclick="onHapus('{{$user->id}}')">
                                                     <i class="bi bi-trash btn-outline-danger crsr"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#editModal" onclick="onEdit('{{$user->first_name}}','{{$user->last_name}}','{{$user->username}}','{{$user->password}}'), '{{$user->role}}'">
+                                                <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#editModal" onclick="onEdit('{{$user->id}}','{{$user->first_name}}','{{$user->last_name}}','{{$user->username}}','{{$user->password}}'), '{{$user->role}}'">
                                                     <i class="bi bi-pencil-square btn-outline-success crsr"></i>
                                                 </button>
                                             </td>
@@ -233,8 +233,12 @@
         var edit = document.getElementById("edit");
         var hapus = document.getElementById("hapus");
 
-        function onEdit(fName, lName, username, password, role){
+        function onEdit(id, fName, lName, username, password, role){
             edit.innerHTML = `
+                <div class="form-group d-none">
+                    <label for="id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id" value="${id}">
+                </div>
                 <div class="form-group">
                     <label for="first_name">Nama Depan</label>
                     <input type="text" class="form-control" id="first_name" placeholder="John" name="first_name" value="${fName}">
@@ -248,8 +252,8 @@
                     <input type="text" class="form-control" id="username" name="username" value="${username}">
                 </div>
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="text" class="form-control" id="password" name="password" value="${password}">
+                    <label for="password">New Password</label>
+                    <input type="text" class="form-control" id="password" name="password">
                 </div>
                 <div class="form-group">
                     <label for="role">Role</label>
