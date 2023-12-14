@@ -30,5 +30,9 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
-
+    'browsershot' => [
+        'node' => 'C:\Program Files\nodejs\node.exe',
+        'npm' => 'C:\Program Files\nodejs\npm',
+        'bin' => 'C:\Program Files\Google\Chrome\Application\chrome.exe',
+    ],
 ];

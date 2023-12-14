@@ -18,13 +18,17 @@
                         </div>
                         <div class="card-body">
                             <div class="d-flex justify-content-around align-items-center p-3">
-                                <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal">
-                                    <i class="bi bi-plus"></i>
-                                    Tambah
-                                </button>
+                                @if (Auth::user()->role === "MANAJER")
+                                    <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal">
+                                        <i class="bi bi-plus"></i>
+                                        Tambah
+                                    </button>
+                                @endif
                                 <div class="search-brg-wrap">
-                                    <input class="search-brg">
-                                    <button class="btn btn-sm btn-outline-primary">Cari</button>
+                                    <form action="/pengguna" method="GET">
+                                        <input class="search-brg" name="search" value="{{request("search")}}">
+                                        <button type="submit" class="btn btn-sm btn-outline-primary">Cari</button>
+                                    </form>
                                 </div>
                             </div>
 
@@ -87,12 +91,16 @@
                                             <td>{{$user->username}}</td>
                                             <td>{{$user->role}}</td>
                                             <td>
-                                                <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#hapusModal" onclick="onHapus('{{$user->id}}')">
-                                                    <i class="bi bi-trash btn-outline-danger crsr"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#editModal" onclick="onEdit('{{$user->id}}','{{$user->first_name}}','{{$user->last_name}}','{{$user->username}}','{{$user->password}}'), '{{$user->role}}'">
-                                                    <i class="bi bi-pencil-square btn-outline-success crsr"></i>
-                                                </button>
+                                                @if (Auth::user()->role === "MANAJER")
+                                                    <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#hapusModal" onclick="onHapus('{{$user->id}}')">
+                                                        <i class="bi bi-trash btn-outline-danger crsr"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#editModal" onclick="onEdit('{{$user->id}}','{{$user->first_name}}','{{$user->last_name}}','{{$user->username}}','{{$user->password}}'), '{{$user->role}}'">
+                                                        <i class="bi bi-pencil-square btn-outline-success crsr"></i>
+                                                    </button>
+                                                @else
+                                                    -
+                                                @endif
                                             </td>
                                         </tr>
                                         @endforeach

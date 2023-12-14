@@ -18,12 +18,14 @@
                         </div>
                         <div class="card-body">
                             <div class="d-flex justify-content-around flex-wrap">
-                                <div class="d-flex align-items-center p-3">
-                                    <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal">
-                                        <i class="bi bi-plus"></i>
-                                        Tambah
-                                    </button>
-                                </div>
+                                @if (Auth::user()->role === "ADMIN")
+                                    <div class="d-flex align-items-center p-3">
+                                        <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal">
+                                            <i class="bi bi-plus"></i>
+                                            Tambah
+                                        </button>
+                                    </div>
+                                @endif
                                 <form action="/barang-masuk" method="GET">
                                     <div class="d-flex align-items-center">
                                         <div class="d-flex justify-content-center">
@@ -104,13 +106,15 @@
                                             <td>{{$trx->barang->product_code}}</td>
                                             <td>{{$trx->barang->name}}</td>
                                             <td>{{$trx->quantity}}</td>
-                                            <td> {{ \Carbon\Carbon::parse($trx->created_at)->format('d/m/Y')}}</td>
+                                            <td>{{ \Carbon\Carbon::parse($trx->created_at)->format('d/m/Y')}}</td>
                                             <td>{{$trx->supplier->company_name}}</td>
-                                            <td>{{$trx->pengguna->username}}</td>
+                                            <td>{{$trx->pengguna->first_name}}</td>
                                             <td>
-                                                <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#editModal" onclick="onEdit('{{$trx->id}}', '{{$trx->barang->id}}', '{{$trx->barang->name}}', '{{$trx->quantity}}', '{{\Carbon\Carbon::parse($trx->created_at)->format('d/m/Y')}}', '{{$trx->supplier->id}}', '{{$trx->supplier->company_name}}')">
-                                                    <i class="bi bi-pencil-square btn-outline-success crsr"></i>
-                                                </button>
+                                                @if (Auth::user()->role === "ADMIN")
+                                                    <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#editModal" onclick="onEdit('{{$trx->id}}', '{{$trx->barang->id}}', '{{$trx->barang->name}}', '{{$trx->quantity}}', '{{\Carbon\Carbon::parse($trx->created_at)->format('d/m/Y')}}', '{{$trx->supplier->id}}', '{{$trx->supplier->company_name}}')">
+                                                        <i class="bi bi-pencil-square btn-outline-success crsr"></i>
+                                                    </button>
+                                                @endif
                                             </td>
                                         </tr>
                                         @endforeach
@@ -174,11 +178,7 @@
                         </div>
                         <div class="form-group">
                             <label for="quantity">Kuantiti</label>
-                            <input type="text" class="form-control" id="quantity" name="quantity">
-                        </div>
-                        <div class="form-group">
-                            <label for="to">To:</label>
-                            <input type="date" id="to" class="form-control date-inp" name="to" value="{{request("to")}}" />
+                            <input type="number" class="form-control" id="quantity" name="quantity">
                         </div>
                         <div class="form-group">
                             <label for="supplier_id">Supplier:</label>
@@ -203,7 +203,9 @@
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form>
+                <form action="/barang-masuk" method="POST">
+                    @csrf
+                    @method('put')
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Edit {{$heading}}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
@@ -237,11 +239,7 @@
             </div>
             <div class="form-group">
                 <label for="quantity">Kuantiti</label>
-                <input type="text" class="form-control" id="quantity" name="quantity" value="${kuantiti}">
-            </div>
-            <div class="form-group">
-                <label for="created_at">Tanggal:</label>
-                <input type="text" id="created_at" class="form-control date-inp" value="${tanggal}" disabled name="created_at" />
+                <input type="number" class="form-control" id="quantity" name="quantity" value="${kuantiti}">
             </div>
             <div class="form-group">
                 <label for="supplier_id">Supplier:</label>

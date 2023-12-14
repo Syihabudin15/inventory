@@ -14,4 +14,25 @@ class AuthController extends Controller
             return view("LoginView");
         }
     }
+
+    public function handleLogin(Request $request){
+        $validate = $request->validate([
+            "username" => ['required', 'min:5'],
+            "password" => ['required', 'min:5']
+        ]);
+        $cred = [
+            "username" => $validate['username'],
+            "password" => $validate['password']
+        ];
+        if(Auth::attempt($cred)){
+            return redirect('/dashboard');
+        }else{
+            return redirect('/')->with(['error' => "Wrong username or password"]);
+        }
+    }
+
+    public function handleLogout(){
+        Auth::logout();
+        return redirect('/');
+    }
 }

@@ -32,7 +32,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                                 Barang Masuk ({{$currMonth}})</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">500</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{$data['monthly']['masuk']['total']}}</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -50,7 +50,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                                 Barang Keluar ({{$currMonth}})</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">250</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{$data['monthly']['keluar']['total']}}</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -68,7 +68,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
                                                 Barang Rusak ({{$currMonth}})</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">30</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{$data['monthly']['rusak']['total']}}</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -145,14 +145,13 @@
 <!-- End of Page Wrapper -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // var data = @json($data);
-    // console.log(data);
+    var data = @json($data);
     const ctx = document.getElementById('myPieChart');
     new Chart(ctx, {
     type: 'pie',
     data: {
         datasets: [{
-        data: [55, 30, 15],
+        data: [data.yearly.masuk.total, data.yearly.keluar.total, data.yearly.rusak.total],
         backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
         hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
         hoverBorderColor: "rgba(234, 236, 244, 1)",
@@ -195,7 +194,7 @@
         pointHoverBorderColor: "rgba(78, 115, 223, 1)",
         pointHitRadius: 10,
         pointBorderWidth: 2,
-        data: [0, 100, 500, 1000, 1500, 2000, 2500, 3000],
+        data: data.yearly.masuk.data,
         },
         {
         label: "Keluar",
@@ -210,7 +209,7 @@
         pointHoverBorderColor: "green",
         pointHitRadius: 10,
         pointBorderWidth: 2,
-        data: [0, 50, 100, 150, 110, 90, 100, 190],
+        data: data.yearly.keluar.data,
         },
         {
         label: "Rusak",
@@ -225,7 +224,7 @@
         pointHoverBorderColor: "red",
         pointHitRadius: 10,
         pointBorderWidth: 2,
-        data: [0, 10, 30, 50, 40, 80, 100, 80],
+        data: data.yearly.rusak.data,
         }],
     },
     options: {

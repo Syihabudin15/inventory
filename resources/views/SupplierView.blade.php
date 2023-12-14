@@ -48,10 +48,12 @@
                         
                         <div class="card-body">
                             <div class="d-flex justify-content-around align-items-center p-3">
-                                <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal">
-                                    <i class="bi bi-plus"></i>
-                                    Tambah
-                                </button>
+                                @if (Auth::user()->role === "ADMIN")
+                                    <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal">
+                                        <i class="bi bi-plus"></i>
+                                        Tambah
+                                    </button>
+                                @endif
                                 <div class="search-brg-wrap">
                                     <form action="/supplier" method="GET">
                                         <input class="search-brg" name=search value="{{request("search")}}">
@@ -99,12 +101,16 @@
                                                 <td>{{$sup->email}}</td>
                                                 <td>{{$sup->no_telepon}}</td>
                                                 <td>
-                                                    <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#hapusModal" onclick="onHapus({{$sup->id}})">
-                                                        <i class="bi bi-trash btn-outline-danger crsr"></i>
-                                                    </button>
-                                                    <button type="button" class="btn btn-outline-success btn-sm" onclick="onEdit({{$sup->id}}, '{{$sup->company_name}}','{{$sup->address}}','{{$sup->sub_district}}','{{$sup->city}}','{{$sup->zip_code}}','{{$sup->country}}','{{$sup->email}}','{{$sup->no_telepon}}')" data-toggle="modal" data-target="#editModal">
-                                                        <i class="bi bi-pencil-square btn-outline-success crsr"></i>
-                                                    </button>
+                                                    @if (Auth::user()->role === "ADMIN")
+                                                        <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#hapusModal" onclick="onHapus({{$sup->id}})">
+                                                            <i class="bi bi-trash btn-outline-danger crsr"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-outline-success btn-sm" onclick="onEdit({{$sup->id}}, '{{$sup->company_name}}','{{$sup->address}}','{{$sup->sub_district}}','{{$sup->city}}','{{$sup->zip_code}}','{{$sup->country}}','{{$sup->email}}','{{$sup->no_telepon}}')" data-toggle="modal" data-target="#editModal">
+                                                            <i class="bi bi-pencil-square btn-outline-success crsr"></i>
+                                                        </button>
+                                                    @else
+                                                        -
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach

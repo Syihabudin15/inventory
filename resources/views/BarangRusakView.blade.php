@@ -17,12 +17,65 @@
                             <h6 class="m-0 font-weight-bold text-primary">Data {{$heading}}</h6>
                         </div>
                         <div class="card-body">
-                            <div class="d-flex align-items-center p-3">
-                                <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal">
-                                    <i class="bi bi-plus"></i>
-                                    Tambah
-                                </button>
+                            <div class="d-flex justify-content-around flex-wrap">
+                                @if (Auth::user()->role === "ADMIN")
+                                    <div class="d-flex align-items-center p-3">
+                                        <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal">
+                                            <i class="bi bi-plus"></i>
+                                            Tambah
+                                        </button>
+                                    </div>
+                                @endif
+                                <form action="/barang-rusak" method="GET">
+                                    <div class="d-flex align-items-center">
+                                        <div class="d-flex justify-content-center">
+                                            <div class="form-group mx-2">
+                                                <label for="from">From:</label>
+                                                <input type="date" id="from" class="form-control date-inp" name="from" value="{{request("from")}}" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="to">To:</label>
+                                                <input type="date" id="to" class="form-control date-inp" name="to" value="{{request("to")}}" />
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn m-1 h-45 mt-3 btn-outline-primary btn-sm">
+                                            <i class="bi bi-search"></i>
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
+
+                            @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                            @endif
+
+                            @if ($message = Session::get('success'))
+                                <div class="alert alert-success alert-block">
+                                    <button type="button" class="close" data-dismiss="alert">×</button>	
+                                    <strong>{{ $message }}</strong>
+                                </div>
+                            @endif
+
+                            @if ($message = Session::get('info'))
+                                <div class="alert alert-success alert-block">
+                                    <button type="button" class="close" data-dismiss="alert">×</button>	
+                                    <strong>{{ $message }}</strong>
+                                </div>
+                            @endif
+
+                            @if ($message = Session::get('error'))
+                                <div class="alert alert-danger alert-block">
+                                    <button type="button" class="close" data-dismiss="alert">×</button>	
+                                    <strong>{{ $message }}</strong>
+                                </div>
+                            @endif
+
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
@@ -32,6 +85,7 @@
                                             <th>Kuantiti</th>
                                             <th>Tanggal</th>
                                             <th>Supplier</th>
+                                            <th>Pembuat</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -42,45 +96,43 @@
                                             <th>Kuantiti</th>
                                             <th>Tanggal</th>
                                             <th>Supplier</th>
+                                            <th>Pembuat</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
+                                        @foreach ($data as $trx)
                                         <tr>
-                                            <td>KRM1021</td>
-                                            <td>Kampas Rem</td>
-                                            <td>20</td>
-                                            <td>07-December-2023</td>
-                                            <td>PT Panca Jaya Equipment</td>
+                                            <td>{{$trx->barang->product_code}}</td>
+                                            <td>{{$trx->barang->name}}</td>
+                                            <td>{{$trx->quantity}}</td>
+                                            <td> {{ \Carbon\Carbon::parse($trx->created_at)->format('d/m/Y')}}</td>
+                                            <td>{{$trx->supplier->company_name}}</td>
+                                            <td>{{$trx->pengguna->first_name}}</td>
                                             <td>
-                                                <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#editModal">
-                                                    <i class="bi bi-pencil-square btn-outline-success crsr"></i>
-                                                </button>
+                                                @if (Auth::user()->role === "ADMIN")
+                                                    <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#editModal" onclick="onEdit('{{$trx->id}}', '{{$trx->barang->id}}', '{{$trx->barang->name}}', '{{$trx->quantity}}', '{{\Carbon\Carbon::parse($trx->created_at)->format('d/m/Y')}}', '{{$trx->supplier->id}}', '{{$trx->supplier->company_name}}')">
+                                                        <i class="bi bi-pencil-square btn-outline-success crsr"></i>
+                                                    </button>
+                                                @endif
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <td>KRM1021</td>
-                                            <td>Kampas Rem</td>
-                                            <td>50</td>
-                                            <td>07-December-2023</td>
-                                            <td>PT Hasta Karya Ananta</td>
-                                            <td>
-                                                <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#editModal">
-                                                    <i class="bi bi-pencil-square btn-outline-success crsr"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                                 <div class="d-flex flex-row-reverse">
                                     <nav aria-label="Page navigation example">
                                         <ul class="pagination">
-                                            <li class="page-item">
-                                                <a class="page-link" href="#" aria-label="Previous">
-                                                    <span aria-hidden="true">Prev &laquo;</span>
+                                            @php
+                                                $page = 1;
+                                            @endphp
+                                            <li class="page-item btn btn-sm {{$page === 1 ? "disabled" : ""}}">
+                                                <a class="page-link" href="/supplier?page={{$page === 1 ? 1 : $page-1}}" aria-label="Previous">
+                                                    <span aria-hidden="true">&laquo; Prev</span>
                                                 </a>
-                                                </li>
-                                                <a class="page-link" href="#" aria-label="Next">
+                                            </li>
+                                            <li class="page-item btn btn-sm {{($page == ceil($total / 5)) || (ceil($total / 5) == 0) ? "disabled" : ""}}">
+                                                <a class="page-link" href="/supplier?page={{$page < ceil($total/5) ? $page+1 : ceil($total/5)}}" aria-label="Next">
                                                     <span aria-hidden="true">Next &raquo;</span>
                                                 </a>
                                             </li>
@@ -107,7 +159,9 @@
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form>
+                <form action="/barang-rusak" method="POST">
+                    @csrf
+                    @method('post')
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Tambah {{$heading}}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
@@ -115,35 +169,30 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="barang_id">Barang</label>
-                            <select class="custom-select" id="barang_id">
+                            <select class="custom-select" id="barang_id" name="barang_id">
                                 <option selected>Choose...</option>
-                                <option value="1">Kampas Rem</option>
-                                <option value="2">Oli Federal</option>
+                                @foreach ($barang as $brg)
+                                <option value="{{$brg->id}}">{{$brg->name}}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="quantity">Kuantiti</label>
-                            <input type="text" class="form-control" id="quantity">
-                        </div>
-                        <div class="form-group">
-                            <label for="date">Tanggal:</label>
-                            <input type="date" id="date" class="form-control date-inp" name="date" min="2023-10-1" />
+                            <input type="number" class="form-control" id="quantity" name="quantity">
                         </div>
                         <div class="form-group">
                             <label for="supplier_id">Supplier:</label>
-                            <select class="custom-select" id="supplier_id">
+                            <select class="custom-select" id="supplier_id" name="supplier_id">
                                 <option selected>Choose...</option>
-                                <option value="1">PT Panca Jaya Equipment</option>
-                                <option value="2">PT Hasta Karya Ananta</option>
-                                <option value="3">PT Hikmah Jaya Sentosa</option>
-                                <option value="4">PT Clarizza Eston Indonesia</option>
-                                <option value="5">PT Pegasus Hikari</option>
+                                @foreach ($supplier as $sup)
+                                    <option value="{{$sup->id}}">{{$sup->company_name}}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary">Save</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
                     </div>
                 </form>
             </div>
@@ -154,46 +203,53 @@
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form>
+                <form action="/barang-rusak" method="POST">
+                    @csrf
+                    @method('put')
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Edit {{$heading}}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
                     </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="barang_id">Barang</label>
-                            <select class="custom-select" id="barang_id" disabled>
-                                <option value="1">Kampas Rem</option>
-                                <option value="2" selected>Oli Federal</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="quantity">Kuantiti</label>
-                            <input type="text" class="form-control" value="10" id="quantity">
-                        </div>
-                        <div class="form-group">
-                            <label for="date">Tanggal:</label>
-                            <input type="date" id="date" class="form-control date-inp" value="2023-12-07" disabled name="date" min="2023-10-1" />
-                        </div>
-                        <div class="form-group">
-                            <label for="supplier_id">Supplier:</label>
-                            <select class="custom-select" id="supplier_id" disabled>
-                                <option value="1" selected>PT Panca Jaya Equipment</option>
-                                <option value="2">PT Hasta Karya Ananta</option>
-                                <option value="3">PT Hikmah Jaya Sentosa</option>
-                                <option value="4">PT Clarizza Eston Indonesia</option>
-                                <option value="5">PT Pegasus Hikari</option>
-                            </select>
-                        </div>
+                    <div class="modal-body" id="edit">
+                        
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary">Save</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
     {{-- End Edit Modal --}}
+    <script>
+        var edit = document.getElementById('edit');
 
+        function onEdit(id, barang_id, barang, kuantiti, tanggal, supplier_id, supplier){
+            edit.innerHTML = `
+            <div class="form-group d-none">
+                <label for="id">ID</label>
+                <input type="text" class="form-control" id="id" name="id" value="${id}"c>
+            </div>
+            <div class="form-group">
+                <label for="barang_id">Barang</label>
+                <input class="d-none" type="text" class="form-control" id="barang_id" name="barang_id" value="${barang_id}">
+                <select class="custom-select" id="barang_id" disabled>
+                    <option value="${barang_id}" selected>${barang}</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="quantity">Kuantiti</label>
+                <input type="number" class="form-control" id="quantity" name="quantity" value="${kuantiti}">
+            </div>
+            <div class="form-group">
+                <label for="supplier_id">Supplier:</label>
+                <input class="d-none" type="text" class="form-control" id="supplier_id" name="supplier_id" value="${supplier_id}">
+                <select class="custom-select" id="supplier_id" disabled>
+                    <option value="${supplier_id}" selected>${supplier_id}</option>
+                </select>
+            </div>
+            `;
+        }
+    </script>
 @endsection()

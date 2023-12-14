@@ -49,10 +49,12 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-around align-items-center p-3">
                                 <div>
-                                    <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal">
-                                        <i class="bi bi-plus"></i>
-                                        Tambah
-                                    </button>
+                                    @if (Auth::user()->role === "ADMIN")
+                                        <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal">
+                                            <i class="bi bi-plus"></i>
+                                            Tambah
+                                        </button>
+                                    @endif
                                 </div>
                                 <div>
                                     <form action="/barang" method="GET">
@@ -67,6 +69,8 @@
                                         <tr>
                                             <th>Kode Produk</th>
                                             <th>Nama Produk</th>
+                                            <th>Minimun Stok</th>
+                                            <th>Price</th>
                                             <th>Stok</th>
                                             <th>Aksi</th>
                                         </tr>
@@ -75,6 +79,8 @@
                                         <tr>
                                             <th>Kode Produk</th>
                                             <th>Nama Produk</th>
+                                            <th>Minimun Stok</th>
+                                            <th>Price</th>
                                             <th>Stok</th>
                                             <th>Aksi</th>
                                         </tr>
@@ -84,14 +90,20 @@
                                         <tr>
                                             <td>{{$brg->product_code}}</td>
                                             <td>{{$brg->name}}</td>
+                                            <td>{{$brg->min_stock}}</td>
+                                            <td>{{$brg->price}}</td>
                                             <td>{{$brg->stock}}</td>
                                             <td>
-                                                <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#hapusModal" onclick="onHapus('{{$brg->id}}')">
-                                                    <i class="bi bi-trash btn-outline-danger crsr"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#editModal" onclick="onEdit('{{$brg->id}}','{{$brg->name}}','{{$brg->product_code}}')">
-                                                    <i class="bi bi-pencil-square btn-outline-success crsr"></i>
-                                                </button>
+                                                @if (Auth::user()->role === "ADMIN")
+                                                    <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#hapusModal" onclick="onHapus('{{$brg->id}}')">
+                                                        <i class="bi bi-trash btn-outline-danger crsr"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#editModal" onclick="onEdit('{{$brg->id}}','{{$brg->name}}','{{$brg->product_code}}','{{$brg->min_stock}}','{{$brg->price}}')">
+                                                        <i class="bi bi-pencil-square btn-outline-success crsr"></i>
+                                                    </button>
+                                                @else
+                                                    -
+                                                @endif
                                             </td>
                                         </tr>
                                         @endforeach
@@ -151,6 +163,14 @@
                         <div class="form-group">
                             <label for="product_code">Kode Barang</label>
                             <input type="text" class="form-control" id="product_code" placeholder="B1145" name="product_code" value="{{old('product_code')}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="min_stock">Minimun Stock</label>
+                            <input type="number" class="form-control" id="min_stock" placeholder="B1145" name="min_stock" value="{{old('min_stock')}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="price">Price</label>
+                            <input type="number" class="form-control" id="price" placeholder="B1145" name="price" value="{{old('price')}}">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -215,7 +235,7 @@
         var edit = document.getElementById("edit");
         var hapus = document.getElementById("hapus");
 
-        function onEdit(id, name, product_code){
+        function onEdit(id, name, product_code, min_stock, price){
             edit.innerHTML = `
                 <div class="form-group d-none">
                     <label for="id">ID</label>
@@ -228,6 +248,14 @@
                 <div class="form-group">
                     <label for="product_code">Kode Barang</label>
                     <input type="text" class="form-control" id="product_code" name="product_code" value="${product_code}">
+                </div>
+                <div class="form-group">
+                    <label for="min_stock">Minimun Stock</label>
+                    <input type="number" class="form-control" id="min_stock" placeholder="B1145" name="min_stock" value="${min_stock}">
+                </div>
+                <div class="form-group">
+                    <label for="price">Price</label>
+                    <input type="number" class="form-control" id="price" placeholder="B1145" name="price" value="${price}">
                 </div>
             `;
         };
