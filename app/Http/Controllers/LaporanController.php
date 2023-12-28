@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BarangModel;
+use App\Models\SupplierModel;
 use App\Models\TransaksiBarangModel;
 use Barryvdh\DomPDF\PDF;
 use Carbon\Carbon;
@@ -39,11 +41,52 @@ class LaporanController extends Controller
             $this->endDate = Carbon::now();
         }
         $this->range = ceil(CarbonPeriod::create($this->startDate, $this->endDate)->count() / 4);
+        $barang = BarangModel::where("is_active", "=", true)->whereColumn('stock', "<=", "min_stock")->get();
+        $supply = SupplierModel::where("is_active", "=", true)->get();
         
+        $result = [];
+        foreach ($barang as $brg) {
+            $cekTX = TransaksiBarangModel::where("status", "=", "MASUK")->where("barang_id", "=", $brg->id)->get();
+            
+            if(count($cekTX) > 0){
+                foreach ($supply as $sup) {
+                    $masuk = TransaksiBarangModel::where("status", "=", "MASUK")->where("barang_id", "=", $brg->id)->where("supplier_id", "=", $sup->id)->get();
+                    $keluar = TransaksiBarangModel::where("status", "=", "KELUAR")->where("barang_id", "=", $brg->id)->where("supplier_id", "=", $sup->id)->get();
+                    $rusak = TransaksiBarangModel::where("status", "=", "RUSAK")->where("barang_id", "=", $brg->id)->where("supplier_id", "=", $sup->id)->get();
 
+                    if(count($masuk) > 0){
+                        array_push($result, collect([
+                            "product_code" => $brg->product_code,
+                            "product_name" => $brg->name,
+                            "supplier" => $sup->company_name,
+                            "email" => $sup->email,
+                            "no_telepon" => $sup->no_telepon,
+                            "masuk" => $masuk->sum('quantity'),
+                            "keluar" => count($keluar) != 0 ? $keluar->sum('quantity') : 0,
+                            "rusak" => count($rusak) != 0 ? $rusak->sum('quantity') : 0,
+                            "sisa_stock" => $masuk->sum('quantity') - ($keluar->sum('quantity') + $rusak->sum('quantity'))
+                        ]));
+                    }
+                }
+            }else{
+                array_push($result, collect([
+                    "product_code" => $brg->product_code,
+                    "product_name" => $brg->name,
+                    "supplier" => "-",
+                    "email" => "-",
+                    "no_telepon" => "-",
+                    "masuk" => 0,
+                    "keluar" => 0,
+                    "rusak" => 0,
+                    "sisa_stock" => 0
+                ]));
+            }
+        }
+        
         return view('LaporanView', [
             "heading" => "Laporan Bulanan",
-            "data" => $this->trans
+            "data" => $this->trans,
+            "re_stock" => collect($result)
         ]);
     }
 
@@ -168,6 +211,9 @@ class LaporanController extends Controller
             $setTo = Carbon::parse($request['to'])->format('F');
         }
 
+        $restock = $this->createReStock();
+        $barangs = BarangModel::where("is_active", "=", true)->get();
+
         $pdf = app('dompdf.wrapper');
         
         $options = $pdf->getOptions();
@@ -175,14 +221,30 @@ class LaporanController extends Controller
         $pdf->loadView('pdf', [
             'heading' => "Data Test",
             "data" => [
+                "barangs" => $barangs,
+                "restock" => collect($restock),
+                'heading' => "Data Test",
                 "from" => $setFrom,
                 "to" => $setTo,
                 "pie" => "https://quickchart.io/chart?w=150&h=150&c=". urlencode($configPie),
                 "line" => "https://quickchart.io/chart?w=280&h=200&c=". urlencode($configLine),
-                "data" => collect($result)
+                "data" => collect($result)   
             ]
         ]);
         return $pdf->download("Laporan ".Carbon::now()->format('d-m-Y').".pdf");
+        
+        // return view('pdf', [
+        //     "data" => [
+        //         "barangs" => $barangs,
+        //         "restock" => collect($restock),
+        //         'heading' => "Data Test",
+        //         "from" => $setFrom,
+        //         "to" => $setTo,
+        //         "pie" => "https://quickchart.io/chart?w=150&h=150&c=". urlencode($configPie),
+        //         "line" => "https://quickchart.io/chart?w=280&h=200&c=". urlencode($configLine),
+        //         "data" => collect($result)   
+        //     ]
+        // ]);
     }
 
     public function createDetail($range, $st){
@@ -253,6 +315,50 @@ class LaporanController extends Controller
         $data["rusak"]["all"] = collect($data["rusak"]["all"])->flatten(1);
         
         return $data;
+    }
+
+    public function createReStock(){
+        $barang = BarangModel::where("is_active", "=", true)->whereColumn('stock', "<=", "min_stock")->get();
+        $supply = SupplierModel::where("is_active", "=", true)->get();
+        $result = [];
+        foreach ($barang as $brg) {
+            $cekTX = TransaksiBarangModel::where("status", "=", "MASUK")->where("barang_id", "=", $brg->id)->get();
+            
+            if(count($cekTX) > 0){
+                foreach ($supply as $sup) {
+                    $masuk = TransaksiBarangModel::where("status", "=", "MASUK")->where("barang_id", "=", $brg->id)->where("supplier_id", "=", $sup->id)->get();
+                    $keluar = TransaksiBarangModel::where("status", "=", "KELUAR")->where("barang_id", "=", $brg->id)->where("supplier_id", "=", $sup->id)->get();
+                    $rusak = TransaksiBarangModel::where("status", "=", "RUSAK")->where("barang_id", "=", $brg->id)->where("supplier_id", "=", $sup->id)->get();
+
+                    if(count($masuk) > 0){
+                        array_push($result, collect([
+                            "product_code" => $brg->product_code,
+                            "product_name" => $brg->name,
+                            "supplier" => $sup->company_name,
+                            "email" => $sup->email,
+                            "no_telepon" => $sup->no_telepon,
+                            "masuk" => $masuk->sum('quantity'),
+                            "keluar" => count($keluar) != 0 ? $keluar->sum('quantity') : 0,
+                            "rusak" => count($rusak) != 0 ? $rusak->sum('quantity') : 0,
+                            "sisa_stock" => $masuk->sum('quantity') - ($keluar->sum('quantity') + $rusak->sum('quantity'))
+                        ]));
+                    }
+                }
+            }else{
+                array_push($result, collect([
+                    "product_code" => $brg->product_code,
+                    "product_name" => $brg->name,
+                    "supplier" => "-",
+                    "email" => "-",
+                    "no_telepon" => "-",
+                    "masuk" => 0,
+                    "keluar" => 0,
+                    "rusak" => 0,
+                    "sisa_stock" => 0
+                ]));
+            }
+        }
+        return collect($result);
     }
 
 }

@@ -59,14 +59,13 @@ class BarangMasukController extends Controller
             $validate['pengguna_id'] = Auth::user()->id;
             $validate['status'] = "MASUK";
             $findBrg = BarangModel::findOrFail($validate['barang_id']);
-            $findBrg->stock = $findBrg->stock + (int)$validate['quantity'];
+            $findBrg->stock = (int)$findBrg->stock + (int)$validate['quantity'];
             $findBrg->save();
 
             TransaksiBarangModel::create($validate);
             return redirect('/barang-masuk')->with(['success' => 'Barang masuk berhasil diinput']);
         }catch(Exception $exception){
-            dd($exception);
-            return redirect('/barang-masuk')->with(['error' => "Server Error"]);
+            return redirect('/barang-masuk')->with(['error' => "Mohon masukan barang dan supplier"]);
         }
     }
 
@@ -83,14 +82,13 @@ class BarangMasukController extends Controller
             if($find->quantity == $validate['quantity']){
             return redirect('/barang-masuk')->with(['error' => "Mohon masukan kuantiti yang berbeda"]);
             }
-            $brg->stock = ($brg->stock - $find->quantity) + $validate['quantity'];
-            $find->quantity = $validate['quantity'];
+            $brg->stock = (int)($brg->stock - $find->quantity) + (int)$validate['quantity'];
+            $find->quantity = (int)$validate['quantity'];
             
             $find->save();
             $brg->save();
             return redirect('/barang-masuk')->with(['success' => "Update transaksi barang masuk berhasil"]);
         }catch(Exception $exception){
-            dd($exception);
             return redirect('/barang-masuk')->with(['error' => "Server Error"]);
         }
     }

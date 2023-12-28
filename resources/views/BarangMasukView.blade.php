@@ -170,7 +170,7 @@
                         <div class="form-group">
                             <label for="barang_id">Barang</label>
                             <select class="custom-select" id="barang_id" name="barang_id">
-                                <option selected>Choose...</option>
+                                <option selected value="not">Choose...</option>
                                 @foreach ($barang as $brg)
                                 <option value="{{$brg->id}}">{{$brg->name}}</option>
                                 @endforeach
@@ -183,7 +183,7 @@
                         <div class="form-group">
                             <label for="supplier_id">Supplier:</label>
                             <select class="custom-select" id="supplier_id" name="supplier_id">
-                                <option selected>Choose...</option>
+                                <option selected value="not">Choose...</option>
                                 @foreach ($supplier as $sup)
                                     <option value="{{$sup->id}}">{{$sup->company_name}}</option>
                                 @endforeach

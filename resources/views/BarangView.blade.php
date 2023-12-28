@@ -80,23 +80,33 @@
                                             <th>Kode Produk</th>
                                             <th>Nama Produk</th>
                                             <th>Minimun Stok</th>
-                                            <th>Price</th>
-                                            <th>Stok</th>
+                                            <th>Harga</th>
+                                            <th>Stok Tersedia</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
                                         @foreach ($data as $brg)
-                                        <tr>
+                                        <tr style="@if ($brg->stock <= $brg->min_stock)
+                                            color:white;background-color: rgba(240, 23, 23, 0.7);
+                                        @endif">
                                             <td>{{$brg->product_code}}</td>
                                             <td>{{$brg->name}}</td>
                                             <td>{{$brg->min_stock}}</td>
-                                            <td>{{$brg->price}}</td>
+                                            <td>@currency($brg->price)</td>
                                             <td>{{$brg->stock}}</td>
                                             <td>
                                                 @if (Auth::user()->role === "ADMIN")
-                                                    <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#hapusModal" onclick="onHapus('{{$brg->id}}')">
-                                                        <i class="bi bi-trash btn-outline-danger crsr"></i>
+                                                    <button type="button" class="btn @if ($brg->stock <= $brg->min_stock)
+                                                        btn-outline-light
+                                                        @else
+                                                        btn-outline-danger
+                                                    @endif btn-sm" data-toggle="modal" data-target="#hapusModal" onclick="onHapus('{{$brg->id}}')">
+                                                        <i class="bi bi-trash @if ($brg->stock <= $brg->min_stock)
+                                                            text-white
+                                                        @else
+                                                            btn-outline-danger
+                                                        @endif crsr"></i>
                                                     </button>
                                                     <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#editModal" onclick="onEdit('{{$brg->id}}','{{$brg->name}}','{{$brg->product_code}}','{{$brg->min_stock}}','{{$brg->price}}')">
                                                         <i class="bi bi-pencil-square btn-outline-success crsr"></i>
@@ -166,11 +176,11 @@
                         </div>
                         <div class="form-group">
                             <label for="min_stock">Minimun Stock</label>
-                            <input type="number" class="form-control" id="min_stock" placeholder="B1145" name="min_stock" value="{{old('min_stock')}}">
+                            <input type="number" class="form-control" id="min_stock" name="min_stock" value="{{old('min_stock')}}">
                         </div>
                         <div class="form-group">
                             <label for="price">Price</label>
-                            <input type="number" class="form-control" id="price" placeholder="B1145" name="price" value="{{old('price')}}">
+                            <input type="number" class="form-control" id="price" name="price" value="{{old('price')}}">
                         </div>
                     </div>
                     <div class="modal-footer">

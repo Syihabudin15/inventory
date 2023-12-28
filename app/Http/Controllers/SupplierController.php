@@ -39,11 +39,13 @@ class SupplierController extends Controller
             "city" => ['required', 'min:5'],
             "zip_code" => ['required', 'min: 5'],
             "country" => ['required', 'min: 4'],
-            "email" => ['email:rfc,dns', 'nullable'],
             "no_telepon" => ['required', 'min:10'],
         ]);
         
         try{
+            if($request['email']){
+                $validate['email'] = (string)$request['email'];
+            }
             $find = SupplierModel::where('company_name', '=', $validate['company_name'])->first();
 
             if($find && $find->is_active === 0){
@@ -59,6 +61,7 @@ class SupplierController extends Controller
                 return redirect('/supplier')->with(['success' => "Pembuatan supplier berhasil"]);
             }
         }catch(Exception $exception){
+            dd($exception);
             return redirect('/supplier')->with(['error' => "Server Error!"]);
         }
     }

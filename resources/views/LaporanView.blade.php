@@ -5,6 +5,61 @@
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
 
+            <div id="content">
+                <div class="container-fluid">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Barang Re-Stock</h6>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Kode Barang</th>
+                                        <th>Nama Barang</th>
+                                        <th>Supplier</th>
+                                        <th>Email</th>
+                                        <th>No Telepon</th>
+                                        <th>Barang Masuk</th>
+                                        <th>Barang Keluar</th>
+                                        <th>Barang Rusak</th>
+                                        <th>Sisa Stok</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>Kode Barang</th>
+                                        <th>Nama Barang</th>
+                                        <th>Supplier</th>
+                                        <th>Email</th>
+                                        <th>No Telepon</th>
+                                        <th>Barang Masuk</th>
+                                        <th>Barang Keluar</th>
+                                        <th>Barang Rusak</th>
+                                        <th>Sisa Stok</th>
+                                    </tr>
+                                </tfoot>
+                                <tbody>
+                                    @foreach ($re_stock as $re)
+                                        <tr>
+                                            <td>{{$re['product_code']}}</td>
+                                            <td>{{$re['product_name']}}</td>
+                                            <td>{{$re['supplier']}}</td>
+                                            <td>{{$re['email']}}</td>
+                                            <td>{{$re['no_telepon']}}</td>
+                                            <td>{{$re['masuk']}}</td>
+                                            <td>{{$re['keluar']}}</td>
+                                            <td>{{$re['rusak']}}</td>
+                                            <td>{{$re['sisa_stock']}}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Main Content -->
             <div id="content">
 

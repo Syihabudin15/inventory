@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BarangModel;
+use App\Models\TransaksiBarangModel;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -23,6 +24,7 @@ class BarangController extends Controller
         }else{
             $data = BarangModel::where("is_active", "=", true)->take(5)->get();
         }
+
         return view("BarangView", [
             "heading" => "Barang",
             "data" => collect($data),
@@ -34,6 +36,8 @@ class BarangController extends Controller
         $validate = $request->validate([
             "name" => ['required', 'min:5'],
             "product_code" => ['required', 'min:5'],
+            "min_stock" => ['required', "min:2"],
+            "price" => ['required']
         ]);
 
         try{

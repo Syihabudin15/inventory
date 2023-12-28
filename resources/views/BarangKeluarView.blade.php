@@ -107,6 +107,7 @@
                                             <td>{{$trx->quantity}}</td>
                                             <td> {{ \Carbon\Carbon::parse($trx->created_at)->format('d/m/Y')}}</td>
                                             <td>{{$trx->pengguna->first_name}}</td>
+                                            <td>{{$trx->supplier->company_name}}</td>
                                             <td>
                                                 @if (Auth::user()->role === "ADMIN")
                                                     <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#editModal" onclick="onEdit('{{$trx->id}}', '{{$trx->barang->id}}', '{{$trx->barang->name}}', '{{$trx->quantity}}', '{{$trx->supplier_id}}', '{{$trx->supplier->company_name}}'">

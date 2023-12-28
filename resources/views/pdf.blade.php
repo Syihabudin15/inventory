@@ -77,7 +77,11 @@
         <div>
             {{-- Data Barang Masuk --}}
             <div class="page_break" style="text-align: center; margin: 30px 0px">
-                <h6>Data Barang Masuk</h6>
+                <h6>Data Barang Masuk Bulan @if ($data['from'] && $data['to'])
+                    {{$data['from']}} - {{$data['to']}}
+                @else
+                    {{\Carbon\Carbon::now()->format('F')}}
+                @endif</h6>
             </div>
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -117,7 +121,11 @@
 
             {{-- Data Barang Rusak --}}
             <div class="page_break" style="text-align: center; margin: 30px 0px">
-                <h6>Data Barang Keluar</h6>
+                <h6>Data Barang Keluar Bulan @if ($data['from'] && $data['to'])
+                    {{$data['from']}} - {{$data['to']}}
+                @else
+                    {{\Carbon\Carbon::now()->format('F')}}
+                @endif</h6>
             </div>
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -157,7 +165,11 @@
 
             {{-- Data Barang Rusak --}}
             <div class="page_break" style="text-align: center; margin: 30px 0px">
-                <h6>Data Barang Rusak</h6>
+                <h6>Data Barang Rusak Bulan @if ($data['from'] && $data['to'])
+                    {{$data['from']}} - {{$data['to']}}
+                @else
+                    {{\Carbon\Carbon::now()->format('F')}}
+                @endif</h6>
             </div>
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -194,6 +206,74 @@
                 </div>
             </div>
             {{-- End Data Barang Rusak--}}
+
+            {{-- Data Stok Barang --}}
+            <div class="page_break" style="text-align: center; margin: 30px 0px">
+                <h6>Data Stok Barang Saat Ini Bulan {{\Carbon\Carbon::now()->format("F")}}</h6>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Kode Barang</th>
+                            <th>Nama Barang</th>
+                            <th>Minimun Stok</th>
+                            <th>Harga</th>
+                            <th>Stok Saat ini</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($data['barangs'] as $item)
+                            <tr>
+                                <td>{{$item->product_code}}</td>
+                                <td>{{$item->name}}</td>
+                                <td>{{$item->min_stock}}</td>
+                                <td>@currency($item->price)</td>
+                                <td>{{$item->stock}}</td>
+                                <td>@currency($item->price * $item->stock)</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            {{-- End Data Stok Barang --}}
+
+            {{-- Data Restock --}}
+            <div style="text-align: center; margin: 30px 0px">
+                <h6>Data Barang Yang Harus Di Restok Bulan {{\Carbon\Carbon::now()->format("F")}}</h6>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Kode Barang</th>
+                            <th>Nama Barang</th>
+                            <th>Supplier</th>
+                            <th>No Telepon</th>
+                            <th>Barang Masuk</th>
+                            <th>Barang Keluar</th>
+                            <th>Barang Rusak</th>
+                            <th>Sisa Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($data['restock'] as $item)
+                            <tr>
+                                <td>{{$item['product_code']}}</td>
+                                <td>{{$item['product_name']}}</td>
+                                <td>{{$item['supplier']}}</td>
+                                <td>{{$item['no_telepon']}}</td>
+                                <td>{{$item['masuk']}}</td>
+                                <td>{{$item['keluar']}}</td>
+                                <td>{{$item['rusak']}}</td>
+                                <td>{{$item['sisa_stock']}}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            {{-- End Data Restock --}}
         </div>
     </div>
 

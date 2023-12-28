@@ -58,24 +58,19 @@ class BarangRusakController extends Controller
             $validate['pengguna_id'] = Auth::user()->id;
             $validate['status'] = "RUSAK";
             $findBrg = BarangModel::findOrFail($validate['barang_id']);
-            $brgMasuk = collect(TransaksiBarangModel::where("status", "=", "MASUK")->where("supplier_id", "=", $validate['supplier_id'])->where("barang_id", "=", $validate['barang_id'])->get());
-            $totalMasuk = 0;
-            
-            if(count($brgMasuk) == 0){
-                return redirect('/barang-rusak')->with(['error' => 'Maaf!! Supplier ini tidak memiliki barang masuk']);
-            }else{
-                foreach ($brgMasuk as $masuk) {
-                    $totalMasuk += $masuk->quantity;
-                }
-            }
+
+            $brgMasuk = TransaksiBarangModel::where("status", "=", "MASUK")->where("supplier_id", "=", $validate['supplier_id'])->where("barang_id", "=", $validate['barang_id'])->sum("quantity");
+            $brgKeluar = TransaksiBarangModel::where("status", "=", "KELUAR")->where("supplier_id", "=", $validate['supplier_id'])->where("barang_id", "=", $validate['barang_id'])->sum("quantity");
+            $brgRusak = TransaksiBarangModel::where("status", "=", "RUSAK")->where("supplier_id", "=", $validate['supplier_id'])->where("barang_id", "=", $validate['barang_id'])->sum("quantity");
+            $totalMasuk = $brgMasuk - ($brgKeluar + $brgRusak);
             
             if($findBrg->stock < $validate['quantity']){
                 return redirect('/barang-rusak')->with(['error' => 'Maaf!! stok tidak memadai. '.'Stok '.$findBrg->name.': '.$findBrg->stock]);
             }elseif($totalMasuk < $validate['quantity']){
-                return redirect('/barang-rusak')->with(['error' => 'Maaf!! kuantiti melebihi jumlah barang masuk dari supplier']);
+                return redirect('/barang-rusak')->with(['error' => 'Maaf!! kuantiti melebihi jumlah stok barang dari supplier ini']);
             }
             
-            $findBrg->stock = $findBrg->stock - (int)$validate['quantity'];
+            $findBrg->stock = (int)$findBrg->stock - (int)$validate['quantity'];
             $findBrg->save();
 
             TransaksiBarangModel::create($validate);
@@ -112,8 +107,8 @@ class BarangRusakController extends Controller
                 return redirect('/barang-rusak')->with(['error' => 'Maaf!! kuantiti melebihi jumlah barang masuk dari supplier']);
             }
             
-            $brg->stock = ($brg->stock + $find->quantity) - $validate['quantity'];
-            $find->quantity = $validate['quantity'];
+            $brg->stock = (int)($brg->stock + $find->quantity) - (int)$validate['quantity'];
+            $find->quantity = (int)$validate['quantity'];
             
             $find->save();
             $brg->save();
