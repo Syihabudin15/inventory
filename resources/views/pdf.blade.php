@@ -102,7 +102,7 @@
                                 <td>{{$item->supplier->company_name}}</td>
                                 <td>{{$item->barang->product_code}}</td>
                                 <td>{{$item->barang->name}}</td>
-                                <td>{{$item->status}}</td>
+                                <td>{{$item->refund_status ? "REFUND" : "MASUK"}}</td>
                                 <td>{{$item->quantity}}</td>
                                 <td>{{\Carbon\Carbon::parse($item->created_at)->format('d-m-Y')}}</td>
                                 <td>{{$item->pengguna->first_name}}</td>
@@ -190,7 +190,7 @@
                                 <td>{{$item->supplier->company_name}}</td>
                                 <td>{{$item->barang->product_code}}</td>
                                 <td>{{$item->barang->name}}</td>
-                                <td>{{$item->status}}</td>
+                                <td>{{$item->refund_status == "SUCCESS" ? "Telah di refund" : "Belum di refund"}}</td>
                                 <td>{{$item->quantity}}</td>
                                 <td>{{\Carbon\Carbon::parse($item->created_at)->format('d-m-Y')}}</td>
                                 <td>{{$item->pengguna->first_name}}</td>
@@ -254,7 +254,7 @@
                             <th>Barang Masuk</th>
                             <th>Barang Keluar</th>
                             <th>Barang Rusak</th>
-                            <th>Sisa Stock</th>
+                            <th>Sisa Stok</th>
                         </tr>
                     </thead>
                     <tbody>

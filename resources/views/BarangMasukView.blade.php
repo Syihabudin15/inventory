@@ -85,6 +85,7 @@
                                             <th>Kuantiti</th>
                                             <th>Tanggal</th>
                                             <th>Supplier</th>
+                                            <th>Description</th>
                                             <th>Pembuat</th>
                                             <th>Aksi</th>
                                         </tr>
@@ -96,6 +97,7 @@
                                             <th>Kuantiti</th>
                                             <th>Tanggal</th>
                                             <th>Supplier</th>
+                                            <th>Description</th>
                                             <th>Pembuat</th>
                                             <th>Aksi</th>
                                         </tr>
@@ -108,6 +110,11 @@
                                             <td>{{$trx->quantity}}</td>
                                             <td>{{ \Carbon\Carbon::parse($trx->created_at)->format('d/m/Y')}}</td>
                                             <td>{{$trx->supplier->company_name}}</td>
+                                            @if ($trx->refund_status)
+                                                <td>Barang Refund dari {{$trx->supplier->company_name}}</td>
+                                            @else
+                                                <td>Barang Masuk dari {{$trx->supplier->company_name}}</td>
+                                            @endif
                                             <td>{{$trx->pengguna->first_name}}</td>
                                             <td>
                                                 @if (Auth::user()->role === "ADMIN")

@@ -85,6 +85,8 @@
                                             <th>Kuantiti</th>
                                             <th>Tanggal</th>
                                             <th>Supplier</th>
+                                            <th>Refund Status</th>
+                                            <th>Description</th>
                                             <th>Pembuat</th>
                                             <th>Aksi</th>
                                         </tr>
@@ -96,6 +98,8 @@
                                             <th>Kuantiti</th>
                                             <th>Tanggal</th>
                                             <th>Supplier</th>
+                                            <th>Refund Status</th>
+                                            <th>Description</th>
                                             <th>Pembuat</th>
                                             <th>Aksi</th>
                                         </tr>
@@ -108,12 +112,23 @@
                                             <td>{{$trx->quantity}}</td>
                                             <td> {{ \Carbon\Carbon::parse($trx->created_at)->format('d/m/Y')}}</td>
                                             <td>{{$trx->supplier->company_name}}</td>
+                                            <td>{{$trx->refund_status}}</td>
+                                            <td>{{$trx->refund_status == "SUCCESS" ? "Barang telah di refund" : "Barang belum di refund"}}</td>
                                             <td>{{$trx->pengguna->first_name}}</td>
                                             <td>
                                                 @if (Auth::user()->role === "ADMIN")
-                                                    <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#editModal" onclick="onEdit('{{$trx->id}}', '{{$trx->barang->id}}', '{{$trx->barang->name}}', '{{$trx->quantity}}', '{{\Carbon\Carbon::parse($trx->created_at)->format('d/m/Y')}}', '{{$trx->supplier->id}}', '{{$trx->supplier->company_name}}')">
-                                                        <i class="bi bi-pencil-square btn-outline-success crsr"></i>
-                                                    </button>
+                                                    @if ($trx->refund_status == "PENDING")
+                                                    <form action="/barang-rusak/refund" method="POST">
+                                                        @csrf
+                                                        @method("post")
+                                                        <input name="id" value="{{$trx->id}}" class="d-none">
+                                                        <button type="submit" class="btn btn-outline-info btn-sm">
+                                                            Update Refund
+                                                        </button>
+                                                    </form>
+                                                    @else
+                                                        {{"-"}}
+                                                    @endif
                                                 @endif
                                             </td>
                                         </tr>

@@ -57,6 +57,7 @@ class BarangRusakController extends Controller
         try{
             $validate['pengguna_id'] = Auth::user()->id;
             $validate['status'] = "RUSAK";
+            $validate['refund_status'] = "PENDING";
             $findBrg = BarangModel::findOrFail($validate['barang_id']);
 
             $brgMasuk = TransaksiBarangModel::where("status", "=", "MASUK")->where("supplier_id", "=", $validate['supplier_id'])->where("barang_id", "=", $validate['barang_id'])->sum("quantity");
@@ -78,6 +79,29 @@ class BarangRusakController extends Controller
         }catch(Exception $exception){
             // dd($exception);
             return redirect('/barang-rusak')->with(['error' => "Server Error"]);
+        }
+    }
+
+    public function updateRefund(Request $request){
+        try{
+            $find = TransaksiBarangModel::findOrFail($request['id']);
+            $find->refund_status = "SUCCESS";
+            TransaksiBarangModel::create([
+                "barang_id" => $find->barang_id,
+                "supplier_id" => $find->supplier_id,
+                "pengguna_id" => Auth::user()->id,
+                "status" => "MASUK",
+                "refund_status" => "SUCCESS",
+                "quantity" => $find->quantity
+            ]);
+            $findBrg = BarangModel::findOrFail($find->barang_id);
+            $findBrg->stock = (int)$findBrg->stock + $find->quantity;
+            
+            $findBrg->save();
+            $find->save();
+            return redirect('/barang-rusak')->with(['success' => 'Status refund berhasil di update']);
+        }catch(Exception $exception){
+            return redirect('/barang-rusak')->with(['error' => $exception->getMessage()]);
         }
     }
 

@@ -56,6 +56,7 @@ Route::put('/barang-keluar', [BarangKeluarController::class, 'update'])->middlew
 Route::get('/barang-rusak', [BarangRusakController::class, 'index'])->middleware('auth');
 Route::post('/barang-rusak', [BarangRusakController::class, 'create'])->middleware('auth');
 Route::put('/barang-rusak', [BarangRusakController::class, 'update'])->middleware('auth');
+Route::post('/barang-rusak/refund', [BarangRusakController::class, 'updateRefund'])->middleware('auth');
 
 // Barang Laporan Bulanan Routes
 Route::get('/laporan', [LaporanController::class, 'index'])->middleware('auth');

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('supplier_id')->nullable(true)->constrained("supplier_models");
             $table->integer('quantity', false)->length(100);
             $table->enum('status', ["MASUK", "KELUAR", "RUSAK"]);
+            $table->enum("refund_status", ["PENDING", "SUCCESS"])->nullable();
             $table->timestamps();
         });
     }
